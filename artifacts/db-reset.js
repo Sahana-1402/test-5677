@@ -12,28 +12,25 @@ const { db } = require("../config/config");
 const USERS_TO_INSERT = [
     {
         "_id": 1,
-        "userName": "admin",
+        "userName": process.env.ADMIN_USERNAME || "admin",
         "firstName": "Node Goat",
         "lastName": "Admin",
-        "password": "Admin_123",
-        //"password" : "$2a$10$8Zo/1e8KM8QzqOKqbDlYlONBOzukWXrM.IiyzqHRYDXqwB3gzDsba", // Admin_123
+        "password": process.env.ADMIN_PASSWORD,
         "isAdmin": true
     }, {
         "_id": 2,
-        "userName": "user1",
+        "userName": process.env.USER1_USERNAME || "user1",
         "firstName": "John",
         "lastName": "Doe",
         "benefitStartDate": "2030-01-10",
-        "password": "User1_123"
-        // "password" : "$2a$10$RNFhiNmt2TTpVO9cqZElb.LQM9e1mzDoggEHufLjAnAKImc6FNE86",// User1_123
+        "password": process.env.USER1_PASSWORD
     }, {
         "_id": 3,
-        "userName": "user2",
+        "userName": process.env.USER2_USERNAME || "user2",
         "firstName": "Will",
         "lastName": "Smith",
         "benefitStartDate": "2025-11-30",
-        "password": "User2_123"
-        //"password" : "$2a$10$Tlx2cNv15M0Aia7wyItjsepeA8Y6PyBYaNdQqvpxkIUlcONf1ZHyq", // User2_123
+        "password": process.env.USER2_PASSWORD
     }];
 
 const tryDropCollection = (db, name) => {
@@ -60,6 +57,11 @@ const parseResponse = (err, res, comm) => {
 
 
 // Starting here
+if (!process.env.ADMIN_PASSWORD || !process.env.USER1_PASSWORD || !process.env.USER2_PASSWORD) {
+    console.log("ERROR: missing required user passwords in environment variables");
+    process.exit(1);
+}
+
 MongoClient.connect(db, (err, db) =>  {
     if (err) {
         console.log("ERROR: connect");
